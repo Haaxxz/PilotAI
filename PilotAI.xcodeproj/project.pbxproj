@@ -1,0 +1,331 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		8138B931D1B55A7DA3DBD6BF /* PilotAIApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8DBB6E1E5EF582B856A6C0A /* PilotAIApp.swift */; };
+		D81990017EE65E789362BF77 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3757F8AC653E5842845CBBD5 /* AppState.swift */; };
+		D46EB10C903C5E2C86A2C87E /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = F036D7D8DE995F32B31BEC3A /* Message.swift */; };
+		C3DA6B6AFBBA5EC7A345672A /* Conversation.swift in Sources */ = {isa = PBXBuildFile; fileRef = F35B4B12B34355BCBF84CDE1 /* Conversation.swift */; };
+		AA0101D8C8DA5EC8BE6A7B48 /* Provider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 364DAF1B01B95E439B453DCB /* Provider.swift */; };
+		F3CB8134F27D5AC5BFC3A552 /* Character.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6C333BEA2B5501ACA4583F /* Character.swift */; };
+		B2444D83C1F95CC3B6D99904 /* Memory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EEA79E29A415CE6A2BAC345 /* Memory.swift */; };
+		4E9FCEF72421541CA144FFEA /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86B63014391B560F88594505 /* Settings.swift */; };
+		4E452CC0CE37576186D6A563 /* StorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C41D73E5E23F56788D7A14EE /* StorageService.swift */; };
+		5F7B87D0651451B0BCA8950C /* BackupService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995B8D1630D35302835B00DD /* BackupService.swift */; };
+		D08BB0740D0E5823B2AAD50E /* OpenAIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D300B8D119D05E608E95F2B2 /* OpenAIService.swift */; };
+		331D10837D2556F8A1229651 /* AgentEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68215528A5F451F69651E7A7 /* AgentEngine.swift */; };
+		0500A949850E5872B2AE5046 /* ThinkingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D14E575DDA20565A9903F596 /* ThinkingView.swift */; };
+		1C528864A2915A368DDA4C66 /* ToolExecutionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9B300B9ED185B9389DBCB73 /* ToolExecutionView.swift */; };
+		DFA827876AD8533C9F28E2DD /* MessageBubbleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E25AD32C61145C77859C5EAB /* MessageBubbleView.swift */; };
+		16C81760FFFB5E2D9AE27EE7 /* InputBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C7560FF517E553C970B654F /* InputBarView.swift */; };
+		E170030423C558B2B8B38CDB /* ConversationListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B8D1CB3EBC15026A37E2272 /* ConversationListView.swift */; };
+		28739E8B4CF258DC889B17F0 /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7A66FB998AC516AA47B964D /* ChatView.swift */; };
+		F7F5AC26797552F3BBE787EC /* CharacterListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC92A5EA98EF572097C32186 /* CharacterListView.swift */; };
+		8A402190B7B35B28BC83EE21 /* MemoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEE0F0ADE5755AAF8CAB3777 /* MemoryView.swift */; };
+		D2B06ADD244F5F7E86453C5D /* TerminalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ABE78549E015DEDAB03F4D9 /* TerminalView.swift */; };
+		057968101761544F81B071C8 /* ProvidersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AE00AF5330F599BB333F0A1 /* ProvidersView.swift */; };
+		4D9A7589DEB6576B8E2FE2A8 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BAA5ABA3E17567EAD3BD2D7 /* SettingsView.swift */; };
+		BAFBC60843545F9EBFEF3094 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA7A95AD11A055AE87B2F5C9 /* MainTabView.swift */; };
+		C76BBC914B605F1999EBDD60 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E40C8585F01C59FA9DAD2E31 /* Assets.xcassets */; };
+		6E15F97DB0325B6AA46F8E61 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6D305E500F5B5E04A52AC533 /* LaunchScreen.storyboard */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		42E7FE88A5835D99A507F86C /* PilotAI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PilotAI.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E8DBB6E1E5EF582B856A6C0A /* PilotAIApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PilotAI/App/PilotAIApp.swift"; sourceTree = "<group>"; };
+		3757F8AC653E5842845CBBD5 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PilotAI/App/AppState.swift"; sourceTree = "<group>"; };
+		F036D7D8DE995F32B31BEC3A /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PilotAI/Models/Message.swift"; sourceTree = "<group>"; };
+		F35B4B12B34355BCBF84CDE1 /* Conversation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PilotAI/Models/Conversation.swift"; sourceTree = "<group>"; };
+		364DAF1B01B95E439B453DCB /* Provider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PilotAI/Models/Provider.swift"; sourceTree = "<group>"; };
+		CC6C333BEA2B5501ACA4583F /* Character.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PilotAI/Models/Character.swift"; sourceTree = "<group>"; };
+		4EEA79E29A415CE6A2BAC345 /* Memory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PilotAI/Models/Memory.swift"; sourceTree = "<group>"; };
+		86B63014391B560F88594505 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PilotAI/Models/Settings.swift"; sourceTree = "<group>"; };
+		C41D73E5E23F56788D7A14EE /* StorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PilotAI/Services/StorageService.swift"; sourceTree = "<group>"; };
+		995B8D1630D35302835B00DD /* BackupService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PilotAI/Services/BackupService.swift"; sourceTree = "<group>"; };
+		D300B8D119D05E608E95F2B2 /* OpenAIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PilotAI/Services/OpenAIService.swift"; sourceTree = "<group>"; };
+		68215528A5F451F69651E7A7 /* AgentEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PilotAI/Services/AgentEngine.swift"; sourceTree = "<group>"; };
+		D14E575DDA20565A9903F596 /* ThinkingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PilotAI/Views/Chat/ThinkingView.swift"; sourceTree = "<group>"; };
+		F9B300B9ED185B9389DBCB73 /* ToolExecutionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PilotAI/Views/Chat/ToolExecutionView.swift"; sourceTree = "<group>"; };
+		E25AD32C61145C77859C5EAB /* MessageBubbleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PilotAI/Views/Chat/MessageBubbleView.swift"; sourceTree = "<group>"; };
+		8C7560FF517E553C970B654F /* InputBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PilotAI/Views/Chat/InputBarView.swift"; sourceTree = "<group>"; };
+		8B8D1CB3EBC15026A37E2272 /* ConversationListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PilotAI/Views/Chat/ConversationListView.swift"; sourceTree = "<group>"; };
+		B7A66FB998AC516AA47B964D /* ChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PilotAI/Views/Chat/ChatView.swift"; sourceTree = "<group>"; };
+		AC92A5EA98EF572097C32186 /* CharacterListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PilotAI/Views/Characters/CharacterListView.swift"; sourceTree = "<group>"; };
+		FEE0F0ADE5755AAF8CAB3777 /* MemoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PilotAI/Views/Memory/MemoryView.swift"; sourceTree = "<group>"; };
+		2ABE78549E015DEDAB03F4D9 /* TerminalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PilotAI/Views/Terminal/TerminalView.swift"; sourceTree = "<group>"; };
+		0AE00AF5330F599BB333F0A1 /* ProvidersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PilotAI/Views/Providers/ProvidersView.swift"; sourceTree = "<group>"; };
+		3BAA5ABA3E17567EAD3BD2D7 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PilotAI/Views/Settings/SettingsView.swift"; sourceTree = "<group>"; };
+		BA7A95AD11A055AE87B2F5C9 /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PilotAI/Views/MainTabView.swift"; sourceTree = "<group>"; };
+		E40C8585F01C59FA9DAD2E31 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = "folder.assetcatalog"; path = "PilotAI/Resources/Assets.xcassets"; sourceTree = "<group>"; };
+		0AB1CB26E46654ED9BD1B38F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = "text.plist.xml"; path = "PilotAI/Resources/Info.plist"; sourceTree = "<group>"; };
+		6D305E500F5B5E04A52AC533 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = "file.storyboard"; path = "PilotAI/Resources/LaunchScreen.storyboard"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		BD0E0077EF2C5014BE9FB769 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		E8C40AA493785DFCA5A49A2B = {
+			isa = PBXGroup;
+			children = (
+				E8DBB6E1E5EF582B856A6C0A /* PilotAIApp.swift */,
+				3757F8AC653E5842845CBBD5 /* AppState.swift */,
+				F036D7D8DE995F32B31BEC3A /* Message.swift */,
+				F35B4B12B34355BCBF84CDE1 /* Conversation.swift */,
+				364DAF1B01B95E439B453DCB /* Provider.swift */,
+				CC6C333BEA2B5501ACA4583F /* Character.swift */,
+				4EEA79E29A415CE6A2BAC345 /* Memory.swift */,
+				86B63014391B560F88594505 /* Settings.swift */,
+				C41D73E5E23F56788D7A14EE /* StorageService.swift */,
+				995B8D1630D35302835B00DD /* BackupService.swift */,
+				D300B8D119D05E608E95F2B2 /* OpenAIService.swift */,
+				68215528A5F451F69651E7A7 /* AgentEngine.swift */,
+				D14E575DDA20565A9903F596 /* ThinkingView.swift */,
+				F9B300B9ED185B9389DBCB73 /* ToolExecutionView.swift */,
+				E25AD32C61145C77859C5EAB /* MessageBubbleView.swift */,
+				8C7560FF517E553C970B654F /* InputBarView.swift */,
+				8B8D1CB3EBC15026A37E2272 /* ConversationListView.swift */,
+				B7A66FB998AC516AA47B964D /* ChatView.swift */,
+				AC92A5EA98EF572097C32186 /* CharacterListView.swift */,
+				FEE0F0ADE5755AAF8CAB3777 /* MemoryView.swift */,
+				2ABE78549E015DEDAB03F4D9 /* TerminalView.swift */,
+				0AE00AF5330F599BB333F0A1 /* ProvidersView.swift */,
+				3BAA5ABA3E17567EAD3BD2D7 /* SettingsView.swift */,
+				BA7A95AD11A055AE87B2F5C9 /* MainTabView.swift */,
+				E40C8585F01C59FA9DAD2E31 /* Assets.xcassets */,
+				0AB1CB26E46654ED9BD1B38F /* Info.plist */,
+				6D305E500F5B5E04A52AC533 /* LaunchScreen.storyboard */,
+				0E84A546CF32534893A04E02 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		0E84A546CF32534893A04E02 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				42E7FE88A5835D99A507F86C /* PilotAI.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		6204D785F532517F8507925F /* PilotAI */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D3E7DE3DBF0C5E7597B66ECF /* Build configuration list for PBXNativeTarget "PilotAI" */;
+			buildPhases = (
+				6E2CBD72686452B8A227AB61 /* Sources */,
+				BD0E0077EF2C5014BE9FB769 /* Frameworks */,
+				45BC0F2F2AAC5500821AC092 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PilotAI;
+			productName = PilotAI;
+			productReference = 42E7FE88A5835D99A507F86C /* PilotAI.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		72FD1A3714B15936826E23C5 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastUpgradeCheck = 1530;
+				TargetAttributes = {
+					6204D785F532517F8507925F = {
+						CreatedOnToolsVersion = 15.3;
+					};
+				};
+			};
+			buildConfigurationList = 25A709E15F3C575DB680984B /* Build configuration list for PBXProject "PilotAI" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = E8C40AA493785DFCA5A49A2B;
+			productRefGroup = 0E84A546CF32534893A04E02 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				6204D785F532517F8507925F /* PilotAI */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		45BC0F2F2AAC5500821AC092 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C76BBC914B605F1999EBDD60 /* Assets.xcassets in Resources */,
+				6E15F97DB0325B6AA46F8E61 /* LaunchScreen.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		6E2CBD72686452B8A227AB61 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8138B931D1B55A7DA3DBD6BF /* PilotAIApp.swift in Sources */,
+				D81990017EE65E789362BF77 /* AppState.swift in Sources */,
+				D46EB10C903C5E2C86A2C87E /* Message.swift in Sources */,
+				C3DA6B6AFBBA5EC7A345672A /* Conversation.swift in Sources */,
+				AA0101D8C8DA5EC8BE6A7B48 /* Provider.swift in Sources */,
+				F3CB8134F27D5AC5BFC3A552 /* Character.swift in Sources */,
+				B2444D83C1F95CC3B6D99904 /* Memory.swift in Sources */,
+				4E9FCEF72421541CA144FFEA /* Settings.swift in Sources */,
+				4E452CC0CE37576186D6A563 /* StorageService.swift in Sources */,
+				5F7B87D0651451B0BCA8950C /* BackupService.swift in Sources */,
+				D08BB0740D0E5823B2AAD50E /* OpenAIService.swift in Sources */,
+				331D10837D2556F8A1229651 /* AgentEngine.swift in Sources */,
+				0500A949850E5872B2AE5046 /* ThinkingView.swift in Sources */,
+				1C528864A2915A368DDA4C66 /* ToolExecutionView.swift in Sources */,
+				DFA827876AD8533C9F28E2DD /* MessageBubbleView.swift in Sources */,
+				16C81760FFFB5E2D9AE27EE7 /* InputBarView.swift in Sources */,
+				E170030423C558B2B8B38CDB /* ConversationListView.swift in Sources */,
+				28739E8B4CF258DC889B17F0 /* ChatView.swift in Sources */,
+				F7F5AC26797552F3BBE787EC /* CharacterListView.swift in Sources */,
+				8A402190B7B35B28BC83EE21 /* MemoryView.swift in Sources */,
+				D2B06ADD244F5F7E86453C5D /* TerminalView.swift in Sources */,
+				057968101761544F81B071C8 /* ProvidersView.swift in Sources */,
+				4D9A7589DEB6576B8E2FE2A8 /* SettingsView.swift in Sources */,
+				BAFBC60843545F9EBFEF3094 /* MainTabView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		401CD09F4D505AD987A239E3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		EB3B2015E4F858C88B7E9A0F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_OPTIMIZATION_LEVEL = s;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		E11C5021C1A15141880664D2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2026092301;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = PilotAI/Resources/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 3.0.5;
+				PRODUCT_BUNDLE_IDENTIFIER = com.pilotai;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		9E6588704E575CF68D6A928A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2026092301;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = PilotAI/Resources/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 3.0.5;
+				PRODUCT_BUNDLE_IDENTIFIER = com.pilotai;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		25A709E15F3C575DB680984B /* Build configuration list for PBXProject "PilotAI" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				401CD09F4D505AD987A239E3 /* Debug */,
+				EB3B2015E4F858C88B7E9A0F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D3E7DE3DBF0C5E7597B66ECF /* Build configuration list for PBXNativeTarget "PilotAI" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E11C5021C1A15141880664D2 /* Debug */,
+				9E6588704E575CF68D6A928A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+	};
+	rootObject = 72FD1A3714B15936826E23C5 /* Project object */;
+}
