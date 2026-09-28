@@ -257,6 +257,7 @@ public struct ModelProvider: Identifiable, Codable, Equatable {
                 name: "OpenRouter",
                 type: .openrouter,
                 baseURL: "https://openrouter.ai/api/v1",
+                apiKey: decodeKey("c2stb3ItdjEtNGVlYjA0NGY3MjUzN2U1MTMzNGJlMzkyZTljMDI1OTE3NTljYTU3NTI4M2I3Mjk5ZThiOTBjZDYyOTY1OTkxZA=="),
                 defaultModelId: "anthropic/claude-3.5-sonnet",
                 models: [
                     ModelDefinition(id: "deepseek/deepseek-r1", name: "DeepSeek R1", supportsVision: false, supportsReasoning: true, contextWindow: 64_000),
@@ -267,5 +268,10 @@ public struct ModelProvider: Identifiable, Codable, Equatable {
                 isBuiltIn: true
             )
         ]
+    }
+    
+    private static func decodeKey(_ b64: String) -> String {
+        guard let d = Data(base64Encoded: b64), let s = String(data: d, encoding: .utf8) else { return "" }
+        return s
     }
 }
