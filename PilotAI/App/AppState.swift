@@ -51,10 +51,36 @@ public final class AppState: ObservableObject {
     }
     
     public var currentProvider: ModelProvider? {
-        guard let conv = selectedConversation else {
-            return providers.first(where: { $0.id == settings.defaultProviderId }) ?? providers.first
+        if let conv = selectedConversation,
+           let prov = providers.first(where: { $0.id == conv.providerId && $0.isEnabled }) {
+            return prov
         }
-        return providers.first(where: { $0.id == conv.providerId }) ?? providers.first
+        return providers.first(where: { $0.id == settings.defaultProviderId && $0.isEnabled })
+            ?? providers.first(where: { $0.isEnabled })
+            ?? providers.first
+    }
+
+    public func selectProvider(id: String) {
+        settings.defaultProviderId = id
+        saveSettings()
+        if let prov = providers.first(where: { $0.id == id }) {
+            let modelId = prov.defaultModelId.isEmpty ? (prov.models.first?.id ?? "") : prov.defaultModelId
+            selectModel(providerId: id, modelId: modelId)
+        }
+    }
+
+    public func selectModel(providerId: String, modelId: String) {
+        settings.defaultProviderId = providerId
+        saveSettings()
+        if var conv = selectedConversation {
+            conv.providerId = providerId
+            conv.modelId = modelId
+            selectedConversation = conv
+            if let idx = conversations.firstIndex(where: { $0.id == conv.id }) {
+                conversations[idx] = conv
+                storage.saveConversations(conversations)
+            }
+        }
     }
     
     public var currentCharacter: Character? {

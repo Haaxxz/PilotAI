@@ -8,6 +8,16 @@ public struct ChatView: View {
     
     public init() {}
     
+    private var currentModelName: String {
+        guard let conv = state.selectedConversation else {
+            return state.currentProvider?.models.first?.name ?? "Default"
+        }
+        if let m = state.currentProvider?.models.first(where: { $0.id == conv.modelId }) {
+            return m.name
+        }
+        return conv.modelId
+    }
+    
     public var body: some View {
         NavigationView {
             VStack(spacing: 0) {
@@ -62,15 +72,21 @@ public struct ChatView: View {
                 
                 ToolbarItem(placement: .principal) {
                     Button(action: { showModelPicker = true }) {
-                        HStack(spacing: 4) {
+                        VStack(spacing: 2) {
                             Text(state.selectedConversation?.title ?? "PilotAI")
-                                .font(.system(size: 15, weight: .semibold))
+                                .font(.system(size: 15, weight: .bold))
                                 .foregroundColor(.primary)
                                 .lineLimit(1)
                             
-                            Image(systemName: "chevron.down")
-                                .font(.system(size: 10, weight: .bold))
-                                .foregroundColor(.secondary)
+                            HStack(spacing: 4) {
+                                Text("\(state.currentProvider?.name ?? "Provider") · \(currentModelName)")
+                                    .font(.system(size: 11))
+                                    .foregroundColor(.blue)
+                                    .lineLimit(1)
+                                Image(systemName: "chevron.down")
+                                    .font(.system(size: 9, weight: .bold))
+                                    .foregroundColor(.blue)
+                            }
                         }
                     }
                 }
@@ -86,17 +102,9 @@ public struct ChatView: View {
                 ConversationListView()
                     .environmentObject(state)
             }
-            .confirmationDialog("Select Model", isPresented: $showModelPicker, titleVisibility: .visible) {
-                if let prov = state.currentProvider {
-                    ForEach(prov.models) { model in
-                        Button(model.name) {
-                            if var conv = state.selectedConversation {
-                                conv.modelId = model.id
-                                state.selectedConversation = conv
-                            }
-                        }
-                    }
-                }
+            .sheet(isPresented: $showModelPicker) {
+                ModelPickerSheetView()
+                    .environmentObject(state)
             }
         }
         .navigationViewStyle(StackNavigationViewStyle())
@@ -132,13 +140,11 @@ public struct ChatView: View {
     private func suggestionCard(title: String, prompt: String) -> some View {
         Button(action: {
             inputText = prompt
-            state.sendMessage(prompt)
-            inputText = ""
         }) {
             HStack {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(title)
-                        .font(.system(size: 13, weight: .semibold))
+                        .font(.system(size: 14, weight: .semibold))
                         .foregroundColor(.primary)
                     Text(prompt)
                         .font(.system(size: 12))
@@ -150,10 +156,50 @@ public struct ChatView: View {
                     .font(.system(size: 12))
                     .foregroundColor(.secondary)
             }
-            .padding(12)
+            .padding(.horizontal, 14)
+            .padding(.vertical, 10)
             .background(Color(.secondarySystemBackground))
             .cornerRadius(12)
         }
-        .buttonStyle(PlainButtonStyle())
+    }
+}
+
+struct ModelPickerSheetView: View {
+    @EnvironmentObject private var state: AppState
+    @Environment(\.dismiss) private var dismiss
+    
+    var body: some View {
+        NavigationView {
+            List {
+                ForEach(state.providers.filter { $0.isEnabled }) { provider in
+                    Section(header: Text(provider.name)) {
+                        ForEach(provider.models) { model in
+                            HStack {
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(model.name).font(.system(size: 15, weight: .medium))
+                                    Text(model.id).font(.system(size: 11, design: .monospaced)).foregroundColor(.secondary)
+                                }
+                                Spacer()
+                                if provider.id == state.currentProvider?.id && model.id == (state.selectedConversation?.modelId ?? state.currentProvider?.defaultModelId) {
+                                    Image(systemName: "checkmark.circle.fill").foregroundColor(.blue)
+                                }
+                            }
+                            .contentShape(Rectangle())
+                            .onTapGesture {
+                                state.selectModel(providerId: provider.id, modelId: model.id)
+                                dismiss()
+                            }
+                        }
+                    }
+                }
+            }
+            .navigationTitle("Select Provider & Model")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("Done") { dismiss() }
+                }
+            }
+        }
     }
 }

@@ -62,9 +62,8 @@ public struct ProvidersView: View {
             Section(header: Text(filteredProviders.isEmpty ? "No Providers" : "\(filteredProviders.count) Provider(s)")) {
                 ForEach(filteredProviders) { provider in
                     NavigationLink(destination: ProviderDetailView(providerId: provider.id).environmentObject(state)) {
-                        ProviderRow(provider: provider, isActive: provider.id == state.settings.defaultProviderId) {
-                            state.settings.defaultProviderId = provider.id
-                            state.saveSettings()
+                        ProviderRow(provider: provider, isActive: provider.id == (state.selectedConversation?.providerId ?? state.settings.defaultProviderId)) {
+                            state.selectProvider(id: provider.id)
                         }
                     }
                     .opacity(provider.isEnabled ? 1.0 : 0.6)
