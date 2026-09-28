@@ -11,7 +11,7 @@ public struct ProvidersView: View {
 
     public init() {}
 
-    enum NewProviderType { case openai, anthropic }
+    public enum NewProviderType { case openai, anthropic }
 
     var filteredProviders: [ModelProvider] {
         let q = searchQuery.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
