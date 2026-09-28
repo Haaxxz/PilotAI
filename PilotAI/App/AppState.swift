@@ -61,17 +61,22 @@ public final class AppState: ObservableObject {
     }
 
     public func selectProvider(id: String) {
-        settings.defaultProviderId = id
-        saveSettings()
-        if let prov = providers.first(where: { $0.id == id }) {
-            let modelId = prov.defaultModelId.isEmpty ? (prov.models.first?.id ?? "") : prov.defaultModelId
-            selectModel(providerId: id, modelId: modelId)
-        }
+        guard let prov = providers.first(where: { $0.id == id }) else { return }
+        let activeModelId = !prov.defaultModelId.isEmpty ? prov.defaultModelId : (prov.models.first?.id ?? "")
+        selectModel(providerId: id, modelId: activeModelId)
     }
 
     public func selectModel(providerId: String, modelId: String) {
         settings.defaultProviderId = providerId
+        settings.defaultModelId = modelId
         saveSettings()
+        
+        // Update default model inside the target provider
+        if let pIdx = providers.firstIndex(where: { $0.id == providerId }) {
+            providers[pIdx].defaultModelId = modelId
+            storage.saveProviders(providers)
+        }
+        
         if var conv = selectedConversation {
             conv.providerId = providerId
             conv.modelId = modelId
@@ -91,8 +96,14 @@ public final class AppState: ObservableObject {
     // MARK: - Actions
     
     public func newConversation(mode: ConversationMode = .agent, characterId: String? = nil) {
-        let provider = providers.first(where: { $0.id == settings.defaultProviderId }) ?? providers.first ?? ModelProvider.defaults[0]
-        let model = provider.defaultModelId
+        let provider = providers.first(where: { $0.id == settings.defaultProviderId && $0.isEnabled })
+            ?? providers.first(where: { $0.isEnabled })
+            ?? providers.first
+            ?? ModelProvider.defaults[0]
+            
+        let model = provider.models.contains(where: { $0.id == settings.defaultModelId })
+            ? settings.defaultModelId
+            : (!provider.defaultModelId.isEmpty ? provider.defaultModelId : (provider.models.first?.id ?? ""))
         
         var initialMessages: [Message] = []
         var title = "New Conversation"
