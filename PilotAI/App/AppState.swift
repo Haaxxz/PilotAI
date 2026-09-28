@@ -9,6 +9,8 @@ public final class AppState: ObservableObject {
     @Published public var characters: [Character] = []
     @Published public var memory: MemoryDocument = .default
     @Published public var settings: AppSettings = AppSettings()
+    @Published public var mcpServers: [McpServer] = []
+    @Published public var skills: [Skill] = Skill.defaults
     @Published public var isGenerating: Bool = false
     @Published public var terminalOutput: [String] = [
         "PilotAI Interactive Shell [iOS Environment]",
@@ -25,6 +27,8 @@ public final class AppState: ObservableObject {
         self.characters = storage.loadCharacters()
         self.memory = storage.loadMemory()
         self.settings = storage.loadSettings()
+        self.mcpServers = storage.loadMcpServers()
+        self.skills = storage.loadSkills()
         
         if let first = conversations.first {
             self.selectedConversationId = first.id
@@ -301,5 +305,35 @@ public final class AppState: ObservableObject {
     public func deleteCharacter(id: String) {
         characters.removeAll(where: { $0.id == id })
         storage.saveCharacters(characters)
+    }
+
+    public func addMcpServer(_ server: McpServer) {
+        mcpServers.append(server)
+        storage.saveMcpServers(mcpServers)
+    }
+    public func updateMcpServer(_ server: McpServer) {
+        if let idx = mcpServers.firstIndex(where: { $0.id == server.id }) {
+            mcpServers[idx] = server
+            storage.saveMcpServers(mcpServers)
+        }
+    }
+    public func deleteMcpServer(id: String) {
+        mcpServers.removeAll(where: { $0.id == id })
+        storage.saveMcpServers(mcpServers)
+    }
+
+    public func addSkill(_ skill: Skill) {
+        skills.append(skill)
+        storage.saveSkills(skills)
+    }
+    public func updateSkill(_ skill: Skill) {
+        if let idx = skills.firstIndex(where: { $0.id == skill.id }) {
+            skills[idx] = skill
+            storage.saveSkills(skills)
+        }
+    }
+    public func deleteSkill(id: String) {
+        skills.removeAll(where: { $0.id == id })
+        storage.saveSkills(skills)
     }
 }

@@ -128,6 +128,30 @@ public struct SettingsView: View {
                     }
                 }
                 
+                Section(header: Text("Agent Capabilities")) {
+                    NavigationLink(destination: McpServersView().environmentObject(state)) {
+                        HStack {
+                            Image(systemName: "server.rack")
+                                .foregroundColor(.purple)
+                            Text("MCP Servers")
+                        }
+                    }
+                    NavigationLink(destination: SkillsView().environmentObject(state)) {
+                        HStack {
+                            Image(systemName: "sparkles")
+                                .foregroundColor(.yellow)
+                            Text("Agent Skills")
+                        }
+                    }
+                    NavigationLink(destination: AgentToolsView().environmentObject(state)) {
+                        HStack {
+                            Image(systemName: "hammer.fill")
+                                .foregroundColor(.gray)
+                            Text("Agent Tools")
+                        }
+                    }
+                }
+                
                 Section(header: Text("Appearance")) {
                     Picker("Theme", selection: $state.settings.theme) {
                         ForEach(AppTheme.allCases, id: \.self) { theme in

@@ -24,6 +24,8 @@ public struct AppSettings: Codable, Equatable {
     public var defaultModelId: String
     public var enableWebSearchTool: Bool
     public var enableTerminalTool: Bool
+    public var enableMemoryTool: Bool
+    public var enableFileAccessTool: Bool
     
     public init(
         theme: AppTheme = .system,
@@ -34,7 +36,9 @@ public struct AppSettings: Codable, Equatable {
         defaultProviderId: String = "openai",
         defaultModelId: String = "gpt-4o",
         enableWebSearchTool: Bool = true,
-        enableTerminalTool: Bool = true
+        enableTerminalTool: Bool = true,
+        enableMemoryTool: Bool = true,
+        enableFileAccessTool: Bool = true
     ) {
         self.theme = theme
         self.hapticsEnabled = hapticsEnabled
@@ -45,5 +49,7 @@ public struct AppSettings: Codable, Equatable {
         self.defaultModelId = defaultModelId
         self.enableWebSearchTool = enableWebSearchTool
         self.enableTerminalTool = enableTerminalTool
+        self.enableMemoryTool = enableMemoryTool
+        self.enableFileAccessTool = enableFileAccessTool
     }
 }

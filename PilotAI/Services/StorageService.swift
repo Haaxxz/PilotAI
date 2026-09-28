@@ -118,4 +118,42 @@ public final class StorageService {
             try? data.write(to: settingsFileURL, options: .atomic)
         }
     }
+    
+    // MARK: - MCP Servers
+    private var mcpServersFileURL: URL {
+        documentsDirectory.appendingPathComponent("mcp_servers.json")
+    }
+    
+    public func loadMcpServers() -> [McpServer] {
+        guard let data = try? Data(contentsOf: mcpServersFileURL),
+              let list = try? decoder.decode([McpServer].self, from: data) else {
+            return []
+        }
+        return list
+    }
+    
+    public func saveMcpServers(_ servers: [McpServer]) {
+        if let data = try? encoder.encode(servers) {
+            try? data.write(to: mcpServersFileURL, options: .atomic)
+        }
+    }
+    
+    // MARK: - Skills
+    private var skillsFileURL: URL {
+        documentsDirectory.appendingPathComponent("skills.json")
+    }
+    
+    public func loadSkills() -> [Skill] {
+        guard let data = try? Data(contentsOf: skillsFileURL),
+              let list = try? decoder.decode([Skill].self, from: data) else {
+            return Skill.defaults
+        }
+        return list
+    }
+    
+    public func saveSkills(_ skills: [Skill]) {
+        if let data = try? encoder.encode(skills) {
+            try? data.write(to: skillsFileURL, options: .atomic)
+        }
+    }
 }
