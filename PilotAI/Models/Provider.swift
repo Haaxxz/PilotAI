@@ -9,6 +9,8 @@ public enum ProviderType: String, Codable, CaseIterable {
     case minimax = "minimax"
     case siliconflow = "siliconflow"
     case openrouter = "openrouter"
+    case mimo = "mimo"
+    case stepfun = "stepfun"
     case local = "local"
     case custom = "custom"
     
@@ -22,6 +24,8 @@ public enum ProviderType: String, Codable, CaseIterable {
         case .minimax: return "MiniMax"
         case .siliconflow: return "SiliconFlow"
         case .openrouter: return "OpenRouter"
+        case .mimo: return "MiMo"
+        case .stepfun: return "StepFun"
         case .local: return "Local (Ollama/LM Studio)"
         case .custom: return "Custom OpenAI-Compatible"
         }
@@ -37,6 +41,8 @@ public enum ProviderType: String, Codable, CaseIterable {
         case .minimax: return "https://api.minimax.chat/v1"
         case .siliconflow: return "https://api.siliconflow.cn/v1"
         case .openrouter: return "https://openrouter.ai/api/v1"
+        case .mimo: return "https://api.xiaomimimo.com/v1"
+        case .stepfun: return "https://api.stepfun.com/v1"
         case .local: return "http://127.0.0.1:11434/v1"
         case .custom: return "https://api.openai.com/v1"
         }
@@ -126,64 +132,137 @@ public struct ModelProvider: Identifiable, Codable, Equatable {
     public static var defaults: [ModelProvider] {
         [
             ModelProvider(
-                id: "openai",
+                id: "builtin-openai",
                 name: "OpenAI",
                 type: .openai,
+                baseURL: "https://api.openai.com/v1",
                 defaultModelId: "gpt-4o",
                 models: [
+                    ModelDefinition(id: "gpt-5.6-sol", name: "GPT-5.6 Sol", supportsVision: true, supportsReasoning: true, contextWindow: 200_000),
+                    ModelDefinition(id: "gpt-5.6-terra", name: "GPT-5.6 Terra", supportsVision: true, supportsReasoning: false, contextWindow: 200_000),
+                    ModelDefinition(id: "gpt-5.6-luna", name: "GPT-5.6 Luna", supportsVision: true, supportsReasoning: false, contextWindow: 200_000),
+                    ModelDefinition(id: "gpt-5.5", name: "GPT-5.5", supportsVision: true, supportsReasoning: false, contextWindow: 128_000),
                     ModelDefinition(id: "gpt-4o", name: "GPT-4o", supportsVision: true, supportsReasoning: false, contextWindow: 128_000),
-                    ModelDefinition(id: "gpt-4o-mini", name: "GPT-4o Mini", supportsVision: true, supportsReasoning: false, contextWindow: 128_000),
-                    ModelDefinition(id: "o1", name: "o1 Reasoning", supportsVision: true, supportsReasoning: true, contextWindow: 200_000),
+                    ModelDefinition(id: "gpt-4o-mini", name: "GPT-4o mini", supportsVision: true, supportsReasoning: false, contextWindow: 128_000),
                     ModelDefinition(id: "o3-mini", name: "o3-mini", supportsVision: false, supportsReasoning: true, contextWindow: 200_000)
                 ],
                 isBuiltIn: true
             ),
             ModelProvider(
-                id: "anthropic",
+                id: "builtin-anthropic",
                 name: "Anthropic",
                 type: .anthropic,
-                defaultModelId: "claude-3-5-sonnet-latest",
+                baseURL: "https://api.anthropic.com",
+                defaultModelId: "claude-3-5-sonnet-20241022",
                 models: [
-                    ModelDefinition(id: "claude-3-5-sonnet-latest", name: "Claude 3.5 Sonnet", supportsVision: true, supportsReasoning: true, contextWindow: 200_000),
-                    ModelDefinition(id: "claude-3-5-haiku-latest", name: "Claude 3.5 Haiku", supportsVision: true, supportsReasoning: false, contextWindow: 200_000),
-                    ModelDefinition(id: "claude-3-opus-latest", name: "Claude 3 Opus", supportsVision: true, supportsReasoning: false, contextWindow: 200_000)
+                    ModelDefinition(id: "claude-fable-5", name: "Claude Fable 5", supportsVision: true, supportsReasoning: true, contextWindow: 200_000),
+                    ModelDefinition(id: "claude-opus-4-8", name: "Claude Opus 4.8", supportsVision: true, supportsReasoning: false, contextWindow: 200_000),
+                    ModelDefinition(id: "claude-sonnet-5", name: "Claude Sonnet 5", supportsVision: true, supportsReasoning: true, contextWindow: 200_000),
+                    ModelDefinition(id: "claude-3-5-sonnet-20241022", name: "Claude 3.5 Sonnet", supportsVision: true, supportsReasoning: false, contextWindow: 200_000),
+                    ModelDefinition(id: "claude-3-5-haiku-20241022", name: "Claude 3.5 Haiku", supportsVision: true, supportsReasoning: false, contextWindow: 200_000)
                 ],
                 isBuiltIn: true
             ),
             ModelProvider(
-                id: "deepseek",
+                id: "builtin-dashscope",
+                name: "Alibaba Bailian",
+                type: .alibaba,
+                baseURL: "https://dashscope.aliyuncs.com/compatible-mode/v1",
+                defaultModelId: "qwen-turbo",
+                models: [
+                    ModelDefinition(id: "qwen3.7-plus", name: "Qwen 3.7 Plus", supportsVision: false, supportsReasoning: false, contextWindow: 128_000),
+                    ModelDefinition(id: "qwen3-max", name: "Qwen 3 Max", supportsVision: false, supportsReasoning: false, contextWindow: 128_000),
+                    ModelDefinition(id: "qwen-vl-max", name: "Qwen VL Max", supportsVision: true, supportsReasoning: false, contextWindow: 32_000),
+                    ModelDefinition(id: "qwen-turbo", name: "Qwen Turbo", supportsVision: false, supportsReasoning: false, contextWindow: 128_000)
+                ],
+                isBuiltIn: true
+            ),
+            ModelProvider(
+                id: "builtin-deepseek",
                 name: "DeepSeek",
                 type: .deepseek,
+                baseURL: "https://api.deepseek.com",
                 defaultModelId: "deepseek-chat",
                 models: [
-                    ModelDefinition(id: "deepseek-chat", name: "DeepSeek-V3", supportsVision: false, supportsReasoning: false, contextWindow: 64_000),
-                    ModelDefinition(id: "deepseek-reasoner", name: "DeepSeek-R1", supportsVision: false, supportsReasoning: true, contextWindow: 64_000)
+                    ModelDefinition(id: "deepseek-chat", name: "DeepSeek Chat", supportsVision: false, supportsReasoning: false, contextWindow: 64_000),
+                    ModelDefinition(id: "deepseek-reasoner", name: "DeepSeek Reasoner", supportsVision: false, supportsReasoning: true, contextWindow: 64_000)
                 ],
                 isBuiltIn: true
             ),
             ModelProvider(
-                id: "kimi",
+                id: "builtin-kimi",
                 name: "Kimi",
                 type: .kimi,
-                defaultModelId: "moonshot-v1-auto",
+                baseURL: "https://api.moonshot.cn/v1",
+                defaultModelId: "moonshot-v1-8k",
                 models: [
-                    ModelDefinition(id: "moonshot-v1-auto", name: "Moonshot v1 Auto", supportsVision: false, supportsReasoning: false, contextWindow: 128_000),
-                    ModelDefinition(id: "moonshot-v1-8k", name: "Moonshot v1 8K", supportsVision: false, supportsReasoning: false, contextWindow: 8_000),
+                    ModelDefinition(id: "kimi-k1.5", name: "Kimi k1.5", supportsVision: false, supportsReasoning: false, contextWindow: 128_000),
+                    ModelDefinition(id: "moonshot-v1-128k", name: "Moonshot v1 128K", supportsVision: false, supportsReasoning: false, contextWindow: 128_000),
                     ModelDefinition(id: "moonshot-v1-32k", name: "Moonshot v1 32K", supportsVision: false, supportsReasoning: false, contextWindow: 32_000),
-                    ModelDefinition(id: "moonshot-v1-128k", name: "Moonshot v1 128K", supportsVision: false, supportsReasoning: false, contextWindow: 128_000)
+                    ModelDefinition(id: "moonshot-v1-8k", name: "Moonshot v1 8K", supportsVision: false, supportsReasoning: false, contextWindow: 8_000)
                 ],
                 isBuiltIn: true
             ),
             ModelProvider(
-                id: "openrouter",
+                id: "builtin-mimo",
+                name: "MiMo",
+                type: .mimo,
+                baseURL: "https://api.xiaomimimo.com/v1",
+                defaultModelId: "mimo-v1-lite",
+                models: [
+                    ModelDefinition(id: "mimo-v1-pro", name: "MiMo v1 Pro", supportsVision: false, supportsReasoning: false, contextWindow: 32_000),
+                    ModelDefinition(id: "mimo-v1-lite", name: "MiMo v1 Lite", supportsVision: false, supportsReasoning: false, contextWindow: 32_000)
+                ],
+                isBuiltIn: true
+            ),
+            ModelProvider(
+                id: "builtin-minimax",
+                name: "MiniMax",
+                type: .minimax,
+                baseURL: "https://api.minimaxi.com/v1",
+                defaultModelId: "abab6.5t-chat",
+                models: [
+                    ModelDefinition(id: "abab7-chat-preview", name: "abab7 Chat Preview", supportsVision: false, supportsReasoning: false, contextWindow: 32_000),
+                    ModelDefinition(id: "abab6.5t-chat", name: "abab6.5t Chat", supportsVision: false, supportsReasoning: false, contextWindow: 32_000)
+                ],
+                isBuiltIn: true
+            ),
+            ModelProvider(
+                id: "builtin-stepfun",
+                name: "StepFun",
+                type: .stepfun,
+                baseURL: "https://api.stepfun.com/v1",
+                defaultModelId: "step-1-8k",
+                models: [
+                    ModelDefinition(id: "step-2-16k", name: "Step 2 16K", supportsVision: false, supportsReasoning: false, contextWindow: 16_000),
+                    ModelDefinition(id: "step-1-8k", name: "Step 1 8K", supportsVision: false, supportsReasoning: false, contextWindow: 8_000)
+                ],
+                isBuiltIn: true
+            ),
+            ModelProvider(
+                id: "builtin-siliconflow",
+                name: "SiliconFlow",
+                type: .siliconflow,
+                baseURL: "https://api.siliconflow.cn/v1",
+                defaultModelId: "deepseek-ai/DeepSeek-V3",
+                models: [
+                    ModelDefinition(id: "deepseek-ai/DeepSeek-V3", name: "DeepSeek V3", supportsVision: false, supportsReasoning: false, contextWindow: 64_000),
+                    ModelDefinition(id: "deepseek-ai/DeepSeek-R1", name: "DeepSeek R1", supportsVision: false, supportsReasoning: true, contextWindow: 64_000),
+                    ModelDefinition(id: "Qwen/Qwen2.5-72B-Instruct", name: "Qwen 2.5 72B", supportsVision: false, supportsReasoning: false, contextWindow: 32_000)
+                ],
+                isBuiltIn: true
+            ),
+            ModelProvider(
+                id: "builtin-openrouter",
                 name: "OpenRouter",
                 type: .openrouter,
+                baseURL: "https://openrouter.ai/api/v1",
                 defaultModelId: "anthropic/claude-3.5-sonnet",
                 models: [
-                    ModelDefinition(id: "anthropic/claude-3.5-sonnet", name: "Claude 3.5 Sonnet", supportsVision: true, supportsReasoning: true, contextWindow: 200_000),
-                    ModelDefinition(id: "deepseek/deepseek-r1", name: "DeepSeek R1", supportsVision: false, supportsReasoning: true, contextWindow: 128_000),
+                    ModelDefinition(id: "deepseek/deepseek-r1", name: "DeepSeek R1", supportsVision: false, supportsReasoning: true, contextWindow: 64_000),
                     ModelDefinition(id: "openai/gpt-4o", name: "GPT-4o", supportsVision: true, supportsReasoning: false, contextWindow: 128_000),
-                    ModelDefinition(id: "google/gemini-2.5-pro-exp-02-05", name: "Gemini 2.5 Pro", supportsVision: true, supportsReasoning: true, contextWindow: 1_000_000)
+                    ModelDefinition(id: "anthropic/claude-3.5-sonnet", name: "Claude 3.5 Sonnet", supportsVision: true, supportsReasoning: false, contextWindow: 200_000),
+                    ModelDefinition(id: "google/gemini-2.0-flash-001", name: "Gemini 2.0 Flash", supportsVision: true, supportsReasoning: false, contextWindow: 1_000_000)
                 ],
                 isBuiltIn: true
             )

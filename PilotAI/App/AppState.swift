@@ -213,6 +213,16 @@ public final class AppState: ObservableObject {
         storage.saveProviders(providers)
     }
 
+    public func duplicateProvider(id: String) {
+        guard let source = providers.first(where: { $0.id == id }) else { return }
+        var clone = source
+        clone.id = UUID().uuidString
+        clone.name = "\(source.name) (Copy)"
+        clone.isBuiltIn = false
+        providers.append(clone)
+        storage.saveProviders(providers)
+    }
+
     public func updateProvider(_ provider: ModelProvider) {
         if let idx = providers.firstIndex(where: { $0.id == provider.id }) {
             providers[idx] = provider

@@ -2,10 +2,12 @@ import SwiftUI
 
 public struct MessageBubbleView: View {
     public let message: Message
+    public var onDelete: (() -> Void)?
     @State private var copied: Bool = false
     
-    public init(message: Message) {
+    public init(message: Message, onDelete: (() -> Void)? = nil) {
         self.message = message
+        self.onDelete = onDelete
     }
     
     public var body: some View {
@@ -42,6 +44,19 @@ public struct MessageBubbleView: View {
                         .background(message.role == .user ? Color.blue : Color(.secondarySystemBackground))
                         .cornerRadius(16)
                         .textSelection(.enabled)
+                        .contextMenu {
+                            Button(action: { UIPasteboard.general.string = message.content }) {
+                                Label("Copy Text", systemImage: "doc.on.doc")
+                            }
+                            ShareLink(item: message.content) {
+                                Label("Share Text", systemImage: "square.and.arrow.up")
+                            }
+                            if let onDelete = onDelete {
+                                Button(role: .destructive, action: onDelete) {
+                                    Label("Delete Message", systemImage: "trash")
+                                }
+                            }
+                        }
                 } else if message.isStreaming && (message.reasoningContent == nil || message.reasoningContent!.isEmpty) {
                     HStack(spacing: 4) {
                         ForEach(0..<3) { i in

@@ -1,10 +1,12 @@
 import SwiftUI
+import UniformTypeIdentifiers
 
 public struct CharacterListView: View {
     @EnvironmentObject private var state: AppState
     @State private var selectedCharacter: Character? = nil
     @State private var showEditor: Bool = false
     @State private var editingCharacter: Character? = nil
+    @State private var showFileImporter: Bool = false
     
     public init() {}
     
@@ -21,12 +23,31 @@ public struct CharacterListView: View {
             .navigationTitle("Characters")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: {
-                        editingCharacter = nil
-                        showEditor = true
-                    }) {
-                        Image(systemName: "plus")
+                    HStack {
+                        Button(action: { showFileImporter = true }) {
+                            Image(systemName: "square.and.arrow.down")
+                        }
+                        Button(action: {
+                            editingCharacter = nil
+                            showEditor = true
+                        }) {
+                            Image(systemName: "plus")
+                        }
                     }
+                }
+            }
+            .fileImporter(isPresented: $showFileImporter, allowedContentTypes: [.png, .json], allowsMultipleSelection: false) { result in
+                switch result {
+                case .success(let urls):
+                    guard let url = urls.first else { return }
+                    let secure = url.startAccessingSecurityScopedResource()
+                    defer { if secure { url.stopAccessingSecurityScopedResource() } }
+                    if let char = CharacterCardParser.parseCharacter(from: url) {
+                        state.characters.insert(char, at: 0)
+                        state.saveCharacters()
+                    }
+                case .failure(let error):
+                    print(error.localizedDescription)
                 }
             }
             .sheet(item: $selectedCharacter) { char in

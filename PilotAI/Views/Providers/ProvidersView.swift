@@ -68,6 +68,20 @@ public struct ProvidersView: View {
                         }
                     }
                     .opacity(provider.isEnabled ? 1.0 : 0.6)
+                    .contextMenu {
+                        Button(action: {
+                            state.duplicateProvider(id: provider.id)
+                        }) {
+                            Label("Duplicate", systemImage: "doc.on.doc")
+                        }
+                        if !provider.isBuiltIn {
+                            Button(role: .destructive, action: {
+                                providerToDelete = provider
+                            }) {
+                                Label("Delete", systemImage: "trash")
+                            }
+                        }
+                    }
                 }
                 .onDelete { indexSet in
                     for i in indexSet {

@@ -6,6 +6,11 @@ public struct InputBarView: View {
     public let onSend: () -> Void
     public let onStop: () -> Void
     
+    @State private var webSearchEnabled: Bool = false
+    @State private var reasoningEnabled: Bool = false
+    @State private var showAttachmentOptions: Bool = false
+    @State private var attachedImageName: String? = nil
+    
     @FocusState private var isFocused: Bool
     
     public init(text: Binding<String>, isGenerating: Bool, onSend: @escaping () -> Void, onStop: @escaping () -> Void) {
@@ -16,21 +21,63 @@ public struct InputBarView: View {
     }
     
     public var body: some View {
-        VStack(spacing: 0) {
+        VStack(spacing: 6) {
             Divider()
             
-            HStack(alignment: .bottom, spacing: 10) {
+            // Attachment preview badge if attached
+            if let img = attachedImageName {
+                HStack {
+                    Image(systemName: "photo.fill").foregroundColor(.blue)
+                    Text(img).font(.caption).lineLimit(1)
+                    Spacer()
+                    Button(action: { attachedImageName = nil }) {
+                        Image(systemName: "xmark.circle.fill").foregroundColor(.secondary)
+                    }
+                }
+                .padding(.horizontal, 12).padding(.vertical, 4)
+                .background(Color(.tertiarySystemBackground))
+                .cornerRadius(8)
+                .padding(.horizontal, 16)
+            }
+            
+            // Input controls bar
+            HStack(alignment: .bottom, spacing: 8) {
                 // Attachments button
-                Button(action: {
-                    // Attachment action
-                }) {
+                Button(action: { showAttachmentOptions = true }) {
                     Image(systemName: "plus.circle.fill")
                         .font(.system(size: 24))
                         .foregroundColor(.secondary)
                 }
                 .padding(.bottom, 6)
+                .confirmationDialog("Add Attachment", isPresented: $showAttachmentOptions, titleVisibility: .visible) {
+                    Button("Photo / Image") { attachedImageName = "Image_\(Int(Date().timeIntervalSince1970)).png" }
+                    Button("Document / File") { attachedImageName = "Doc_\(Int(Date().timeIntervalSince1970)).txt" }
+                    Button("Cancel", role: .cancel) {}
+                }
                 
-                // Text input
+                // Web Search toggle
+                Button(action: { webSearchEnabled.toggle() }) {
+                    Image(systemName: "globe")
+                        .font(.system(size: 18))
+                        .foregroundColor(webSearchEnabled ? .blue : .secondary)
+                        .padding(6)
+                        .background(webSearchEnabled ? Color.blue.opacity(0.15) : Color.clear)
+                        .clipShape(Circle())
+                }
+                .padding(.bottom, 4)
+                
+                // Deep Thinking toggle
+                Button(action: { reasoningEnabled.toggle() }) {
+                    Image(systemName: "brain")
+                        .font(.system(size: 18))
+                        .foregroundColor(reasoningEnabled ? .purple : .secondary)
+                        .padding(6)
+                        .background(reasoningEnabled ? Color.purple.opacity(0.15) : Color.clear)
+                        .clipShape(Circle())
+                }
+                .padding(.bottom, 4)
+                
+                // Text input field
                 HStack {
                     TextField("Ask PilotAI anything…", text: $text, axis: .vertical)
                         .focused($isFocused)
@@ -53,6 +100,7 @@ public struct InputBarView: View {
                         if !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
                             onSend()
                             text = ""
+                            attachedImageName = nil
                         }
                     }) {
                         Image(systemName: "arrow.up.circle.fill")
@@ -62,8 +110,8 @@ public struct InputBarView: View {
                     .disabled(text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                 }
             }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 10)
+            .padding(.horizontal, 12)
+            .padding(.bottom, 8)
             .background(Color(.systemBackground))
         }
     }
