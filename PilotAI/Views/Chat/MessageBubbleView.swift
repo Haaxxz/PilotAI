@@ -3,11 +3,20 @@ import SwiftUI
 public struct MessageBubbleView: View {
     public let message: Message
     public var onDelete: (() -> Void)?
+    public var onRerun: (() -> Void)?
+    public var onUndo: (() -> Void)?
     @State private var copied: Bool = false
     
-    public init(message: Message, onDelete: (() -> Void)? = nil) {
+    public init(
+        message: Message,
+        onDelete: (() -> Void)? = nil,
+        onRerun: (() -> Void)? = nil,
+        onUndo: (() -> Void)? = nil
+    ) {
         self.message = message
         self.onDelete = onDelete
+        self.onRerun = onRerun
+        self.onUndo = onUndo
     }
     
     public var body: some View {
@@ -51,6 +60,16 @@ public struct MessageBubbleView: View {
                             ShareLink(item: message.content) {
                                 Label("Share Text", systemImage: "square.and.arrow.up")
                             }
+                            if let onRerun = onRerun, message.role == .assistant {
+                                Button(action: onRerun) {
+                                    Label("Rerun Response", systemImage: "arrow.clockwise")
+                                }
+                            }
+                            if let onUndo = onUndo, message.role == .user {
+                                Button(action: onUndo) {
+                                    Label("Undo & Edit Message", systemImage: "arrow.uturn.backward")
+                                }
+                            }
                             if let onDelete = onDelete {
                                 Button(role: .destructive, action: onDelete) {
                                     Label("Delete Message", systemImage: "trash")
@@ -90,6 +109,32 @@ public struct MessageBubbleView: View {
                                 .font(.system(size: 11))
                                 .foregroundColor(.secondary)
                         }
+                        
+                        if let onRerun = onRerun, !message.isStreaming {
+                            Button(action: onRerun) {
+                                HStack(spacing: 3) {
+                                    Image(systemName: "arrow.clockwise")
+                                        .font(.system(size: 11))
+                                    Text("Rerun")
+                                        .font(.system(size: 11))
+                                }
+                                .foregroundColor(.blue)
+                            }
+                        }
+                    }
+                    
+                    if message.role == .user {
+                        if let onUndo = onUndo {
+                            Button(action: onUndo) {
+                                HStack(spacing: 3) {
+                                    Image(systemName: "arrow.uturn.backward")
+                                        .font(.system(size: 11))
+                                    Text("Undo")
+                                        .font(.system(size: 11))
+                                }
+                                .foregroundColor(.secondary)
+                            }
+                        }
                     }
                 }
                 .padding(.horizontal, 4)
@@ -108,3 +153,4 @@ public struct MessageBubbleView: View {
         }
     }
 }
+

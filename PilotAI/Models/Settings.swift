@@ -26,6 +26,8 @@ public struct AppSettings: Codable, Equatable {
     public var enableTerminalTool: Bool
     public var enableMemoryTool: Bool
     public var enableFileAccessTool: Bool
+    public var enableUnsandboxedGateway: Bool
+    public var remoteGatewayURL: String
     
     public init(
         theme: AppTheme = .system,
@@ -38,7 +40,9 @@ public struct AppSettings: Codable, Equatable {
         enableWebSearchTool: Bool = true,
         enableTerminalTool: Bool = true,
         enableMemoryTool: Bool = true,
-        enableFileAccessTool: Bool = true
+        enableFileAccessTool: Bool = true,
+        enableUnsandboxedGateway: Bool = false,
+        remoteGatewayURL: String = ""
     ) {
         self.theme = theme
         self.hapticsEnabled = hapticsEnabled
@@ -51,5 +55,7 @@ public struct AppSettings: Codable, Equatable {
         self.enableTerminalTool = enableTerminalTool
         self.enableMemoryTool = enableMemoryTool
         self.enableFileAccessTool = enableFileAccessTool
+        self.enableUnsandboxedGateway = enableUnsandboxedGateway
+        self.remoteGatewayURL = remoteGatewayURL
     }
 }

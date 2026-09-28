@@ -1,4 +1,6 @@
 import SwiftUI
+import PhotosUI
+import UniformTypeIdentifiers
 
 public extension View {
     func hideKeyboard() {
@@ -7,19 +9,26 @@ public extension View {
 }
 
 public struct InputBarView: View {
+    @EnvironmentObject private var state: AppState
     @Binding public var text: String
     public let isGenerating: Bool
-    public let onSend: () -> Void
+    public let onSend: (Bool, Bool) -> Void
     public let onStop: () -> Void
     
     @State private var webSearchEnabled: Bool = false
     @State private var reasoningEnabled: Bool = false
     @State private var showAttachmentOptions: Bool = false
+    @State private var showPhotoPicker: Bool = false
+    @State private var showFileImporter: Bool = false
+    @State private var selectedPhotoItem: PhotosPickerItem? = nil
+    
     @State private var attachedImageName: String? = nil
+    @State private var attachedImageData: Data? = nil
+    @State private var attachedFileURL: URL? = nil
     
     @FocusState private var isFocused: Bool
     
-    public init(text: Binding<String>, isGenerating: Bool, onSend: @escaping () -> Void, onStop: @escaping () -> Void) {
+    public init(text: Binding<String>, isGenerating: Bool, onSend: @escaping (Bool, Bool) -> Void, onStop: @escaping () -> Void) {
         self._text = text
         self.isGenerating = isGenerating
         self.onSend = onSend
@@ -33,10 +42,18 @@ public struct InputBarView: View {
             // Attachment preview badge if attached
             if let img = attachedImageName {
                 HStack {
-                    Image(systemName: "photo.fill").foregroundColor(.blue)
-                    Text(img).font(.caption).lineLimit(1)
+                    Image(systemName: img.hasSuffix(".png") || img.hasSuffix(".jpg") || img.hasSuffix(".jpeg") || img.hasSuffix(".heic") ? "photo.fill" : "doc.fill")
+                        .foregroundColor(.blue)
+                    Text(img)
+                        .font(.caption)
+                        .lineLimit(1)
                     Spacer()
-                    Button(action: { attachedImageName = nil }) {
+                    Button(action: {
+                        attachedImageName = nil
+                        attachedImageData = nil
+                        attachedFileURL = nil
+                        selectedPhotoItem = nil
+                    }) {
                         Image(systemName: "xmark.circle.fill").foregroundColor(.secondary)
                     }
                 }
@@ -56,8 +73,8 @@ public struct InputBarView: View {
                 }
                 .padding(.bottom, 6)
                 .confirmationDialog("Add Attachment", isPresented: $showAttachmentOptions, titleVisibility: .visible) {
-                    Button("Photo / Image") { attachedImageName = "Image_\(Int(Date().timeIntervalSince1970)).png" }
-                    Button("Document / File") { attachedImageName = "Doc_\(Int(Date().timeIntervalSince1970)).txt" }
+                    Button("Photo / Image") { showPhotoPicker = true }
+                    Button("Document / File") { showFileImporter = true }
                     Button("Cancel", role: .cancel) {}
                 }
                 
@@ -82,6 +99,22 @@ public struct InputBarView: View {
                         .clipShape(Circle())
                 }
                 .padding(.bottom, 4)
+                
+                // Context / Token usage badge
+                if let conv = state.selectedConversation, !conv.messages.isEmpty {
+                    let charCount = conv.messages.reduce(0) { $0 + $1.content.count }
+                    let tokenEst = charCount / 4
+                    if tokenEst > 0 {
+                        Text("~\(tokenEst < 1000 ? "\(tokenEst)" : String(format: "%.1fk", Double(tokenEst) / 1000.0)) tks")
+                            .font(.system(size: 10, design: .monospaced))
+                            .foregroundColor(.secondary)
+                            .padding(.horizontal, 5)
+                            .padding(.vertical, 2)
+                            .background(Color(.tertiarySystemBackground))
+                            .cornerRadius(6)
+                            .padding(.bottom, 6)
+                    }
+                }
                 
                 // Text input field
                 HStack {
@@ -112,24 +145,88 @@ public struct InputBarView: View {
                             .foregroundColor(.red)
                     }
                 } else {
-                    Button(action: {
-                        if !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                            onSend()
-                            text = ""
-                            attachedImageName = nil
-                            isFocused = false
-                        }
-                    }) {
+                    Button(action: handleSend) {
                         Image(systemName: "arrow.up.circle.fill")
                             .font(.system(size: 30))
-                            .foregroundColor(text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? Color.secondary.opacity(0.5) : Color.blue)
+                            .foregroundColor(canSend ? Color.blue : Color.secondary.opacity(0.5))
                     }
-                    .disabled(text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                    .disabled(!canSend)
                 }
             }
             .padding(.horizontal, 10)
             .padding(.bottom, 8)
             .background(Color(.systemBackground))
         }
+        .photosPicker(isPresented: $showPhotoPicker, selection: $selectedPhotoItem, matching: .images)
+        .onChange(of: selectedPhotoItem) { newItem in
+            guard let newItem = newItem else { return }
+            Task {
+                if let data = try? await newItem.loadTransferable(type: Data.self) {
+                    await MainActor.run {
+                        self.attachedImageData = data
+                        self.attachedImageName = "Photo_\(Int(Date().timeIntervalSince1970)).png"
+                    }
+                }
+            }
+        }
+        .fileImporter(
+            isPresented: $showFileImporter,
+            allowedContentTypes: [.item, .content, .data, .plainText, .pdf, .image, .json],
+            allowsMultipleSelection: false
+        ) { result in
+            switch result {
+            case .success(let urls):
+                guard let url = urls.first else { return }
+                let accessing = url.startAccessingSecurityScopedResource()
+                defer {
+                    if accessing {
+                        url.stopAccessingSecurityScopedResource()
+                    }
+                }
+                if let data = try? Data(contentsOf: url) {
+                    self.attachedImageData = data
+                    self.attachedFileURL = url
+                    self.attachedImageName = url.lastPathComponent
+                }
+            case .failure(let error):
+                print("File import error: \(error.localizedDescription)")
+            }
+        }
+    }
+    
+    private var canSend: Bool {
+        !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || attachedImageName != nil
+    }
+    
+    private func handleSend() {
+        guard canSend else { return }
+        
+        var fullPrompt = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        
+        if let fileName = attachedImageName {
+            if let data = attachedImageData, let docContent = String(data: data, encoding: .utf8), docContent.count < 15000 {
+                if fullPrompt.isEmpty {
+                    fullPrompt = "Attached file: \(fileName)\n\n\(docContent)"
+                } else {
+                    fullPrompt = "\(fullPrompt)\n\n--- Attached File: \(fileName) ---\n\(docContent)"
+                }
+            } else {
+                if fullPrompt.isEmpty {
+                    fullPrompt = "[Attached File: \(fileName)]"
+                } else {
+                    fullPrompt = "\(fullPrompt)\n\n[Attached File: \(fileName)]"
+                }
+            }
+        }
+        
+        text = fullPrompt
+        onSend(webSearchEnabled, reasoningEnabled)
+        text = ""
+        attachedImageName = nil
+        attachedImageData = nil
+        attachedFileURL = nil
+        selectedPhotoItem = nil
+        isFocused = false
     }
 }
+

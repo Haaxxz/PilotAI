@@ -174,6 +174,23 @@ public struct SettingsView: View {
                         .onChange(of: state.settings.smoothStreamReveal) { state.saveSettings() }
                 }
                 
+                Section(header: Text("Unsandboxed Command Gateway"), footer: Text("Routes terminal commands to a local desktop machine or remote server without iOS app sandbox limits.")) {
+                    Toggle("Enable Remote Gateway", isOn: $state.settings.enableUnsandboxedGateway)
+                        .onChange(of: state.settings.enableUnsandboxedGateway) { state.saveSettings() }
+                    
+                    if state.settings.enableUnsandboxedGateway {
+                        HStack {
+                            Image(systemName: "terminal")
+                                .foregroundColor(.green)
+                            TextField("http://192.168.1.100:8080", text: $state.settings.remoteGatewayURL)
+                                .autocorrectionDisabled()
+                                .textInputAutocapitalization(.never)
+                                .keyboardType(.URL)
+                                .onChange(of: state.settings.remoteGatewayURL) { state.saveSettings() }
+                        }
+                    }
+                }
+                
                 Section(header: Text("Data")) {
                     NavigationLink(destination: BackupView().environmentObject(state)) {
                         HStack {

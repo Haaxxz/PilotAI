@@ -5,6 +5,8 @@ public struct ChatView: View {
     @State private var inputText: String = ""
     @State private var showHistorySheet: Bool = false
     @State private var showModelPicker: Bool = false
+    @State private var showTerminalSheet: Bool = false
+    @State private var showBrowserSheet: Bool = false
     
     public init() {}
     
@@ -31,11 +33,28 @@ public struct ChatView: View {
                                         .padding(.top, 40)
                                 } else {
                                     ForEach(conv.messages) { message in
-                                        MessageBubbleView(message: message)
-                                            .id(message.id)
+                                        MessageBubbleView(
+                                            message: message,
+                                            onDelete: {
+                                                state.deleteMessage(id: message.id)
+                                            },
+                                            onRerun: {
+                                                state.rerunMessage(id: message.id)
+                                            },
+                                            onUndo: {
+                                                if let undoneText = state.undoUserMessage(id: message.id) {
+                                                    inputText = undoneText
+                                                }
+                                            }
+                                        )
+                                        .id(message.id)
                                     }
                                 }
                             }
+                            
+                            Color.clear
+                                .frame(height: 1)
+                                .id("bottomAnchor")
                         }
                         .padding(.horizontal, 16)
                         .padding(.vertical, 16)
@@ -44,21 +63,27 @@ public struct ChatView: View {
                     .onTapGesture {
                         hideKeyboard()
                     }
-                    .onChange(of: state.selectedConversation?.messages.count) {
-                        if state.settings.autoScroll, let last = state.selectedConversation?.messages.last {
-                            withAnimation(.easeOut(duration: 0.25)) {
-                                proxy.scrollTo(last.id, anchor: .bottom)
-                            }
-                        }
+                    .onAppear {
+                        scrollToBottom(proxy: proxy, animated: false)
+                    }
+                    .onChange(of: state.selectedConversationId) { _ in
+                        scrollToBottom(proxy: proxy, animated: false)
+                    }
+                    .onChange(of: state.selectedConversation?.messages.count) { _ in
+                        scrollToBottom(proxy: proxy)
+                    }
+                    .onChange(of: state.selectedConversation?.messages.last?.content) { _ in
+                        scrollToBottom(proxy: proxy)
                     }
                 }
+
                 
                 // Bottom Input Bar
                 InputBarView(
                     text: $inputText,
                     isGenerating: state.isGenerating,
-                    onSend: {
-                        state.sendMessage(inputText)
+                    onSend: { webSearch, reasoning in
+                        state.sendMessage(inputText, webSearchEnabled: webSearch, reasoningEnabled: reasoning)
                     },
                     onStop: {
                         state.stopGenerating()
@@ -96,9 +121,22 @@ public struct ChatView: View {
                 }
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: { state.newConversation() }) {
-                        Image(systemName: "square.and.pencil")
-                            .font(.system(size: 16))
+                    Menu {
+                        Button(action: { state.newConversation() }) {
+                            Label("New Conversation", systemImage: "square.and.pencil")
+                        }
+                        Button(action: { showTerminalSheet = true }) {
+                            Label("Open Terminal", systemImage: "terminal")
+                        }
+                        Button(action: { showBrowserSheet = true }) {
+                            Label("Launch Kimi Web", systemImage: "sparkles")
+                        }
+                        Button(action: { showBrowserSheet = true }) {
+                            Label("Open Browser", systemImage: "safari")
+                        }
+                    } label: {
+                        Image(systemName: "ellipsis.circle")
+                            .font(.system(size: 17))
                     }
                 }
             }
@@ -108,6 +146,14 @@ public struct ChatView: View {
             }
             .sheet(isPresented: $showModelPicker) {
                 ModelPickerSheetView()
+                    .environmentObject(state)
+            }
+            .sheet(isPresented: $showTerminalSheet) {
+                TerminalView()
+                    .environmentObject(state)
+            }
+            .sheet(isPresented: $showBrowserSheet) {
+                BrowserView()
                     .environmentObject(state)
             }
         }
@@ -166,7 +212,23 @@ public struct ChatView: View {
             .cornerRadius(12)
         }
     }
+    
+    private func scrollToBottom(proxy: ScrollViewProxy, animated: Bool = true) {
+        guard state.settings.autoScroll else { return }
+        guard let messages = state.selectedConversation?.messages, !messages.isEmpty else { return }
+        
+        DispatchQueue.main.async {
+            if animated {
+                withAnimation(.easeOut(duration: 0.15)) {
+                    proxy.scrollTo("bottomAnchor", anchor: .bottom)
+                }
+            } else {
+                proxy.scrollTo("bottomAnchor", anchor: .bottom)
+            }
+        }
+    }
 }
+
 
 struct ModelPickerSheetView: View {
     @EnvironmentObject private var state: AppState

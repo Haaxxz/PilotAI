@@ -136,7 +136,62 @@ public final class AppState: ObservableObject {
         storage.saveConversations(conversations)
     }
     
-    public func sendMessage(_ text: String) {
+    public func deleteMessage(id: String) {
+        guard var conv = selectedConversation else { return }
+        conv.messages.removeAll(where: { $0.id == id })
+        selectedConversation = conv
+        if let idx = conversations.firstIndex(where: { $0.id == conv.id }) {
+            conversations[idx] = conv
+            storage.saveConversations(conversations)
+        }
+    }
+    
+    public func rerunMessage(id: String) {
+        guard var conv = selectedConversation else { return }
+        guard let idx = conv.messages.firstIndex(where: { $0.id == id }) else { return }
+        
+        // Find preceding user prompt
+        var userPrompt = ""
+        for i in (0..<idx).reversed() {
+            if conv.messages[i].role == .user {
+                userPrompt = conv.messages[i].content
+                break
+            }
+        }
+        
+        guard !userPrompt.isEmpty else { return }
+        
+        // Remove assistant message and any subsequent messages
+        conv.messages.removeSubrange(idx..<conv.messages.count)
+        selectedConversation = conv
+        if let convIdx = conversations.firstIndex(where: { $0.id == conv.id }) {
+            conversations[convIdx] = conv
+            storage.saveConversations(conversations)
+        }
+        
+        // Re-send prompt
+        sendMessage(userPrompt)
+    }
+    
+    @discardableResult
+    public func undoUserMessage(id: String) -> String? {
+        guard var conv = selectedConversation else { return nil }
+        guard let idx = conv.messages.firstIndex(where: { $0.id == id }) else { return nil }
+        
+        let userText = conv.messages[idx].content
+        
+        // Remove from this user message onwards
+        conv.messages.removeSubrange(idx..<conv.messages.count)
+        selectedConversation = conv
+        if let convIdx = conversations.firstIndex(where: { $0.id == conv.id }) {
+            conversations[convIdx] = conv
+            storage.saveConversations(conversations)
+        }
+        
+        return userText
+    }
+    
+    public func sendMessage(_ text: String, webSearchEnabled: Bool = false, reasoningEnabled: Bool = false) {
         guard let conv = selectedConversation, !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
         guard let prov = currentProvider else { return }
         
@@ -165,6 +220,8 @@ public final class AppState: ObservableObject {
             provider: prov,
             character: currentCharacter,
             memory: memory,
+            webSearchEnabled: webSearchEnabled,
+            reasoningEnabled: reasoningEnabled,
             onUpdate: { [weak self] streamingMsg in
                 guard let self = self else { return }
                 var currentList = self.selectedConversation?.messages ?? []
@@ -198,14 +255,38 @@ public final class AppState: ObservableObject {
         terminalOutput.append("$ \(cmd)")
         let trimmed = cmd.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
         
+        if trimmed == "clear" {
+            terminalOutput.removeAll()
+            return
+        }
+        
+        if settings.enableUnsandboxedGateway, let url = URL(string: settings.remoteGatewayURL.trimmingCharacters(in: .whitespacesAndNewlines)), !settings.remoteGatewayURL.isEmpty {
+            var req = URLRequest(url: url)
+            req.httpMethod = "POST"
+            req.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            let body: [String: String] = ["command": cmd]
+            req.httpBody = try? JSONSerialization.data(withJSONObject: body)
+            
+            Task { @MainActor in
+                do {
+                    let (data, _) = try await URLSession.shared.data(for: req)
+                    if let str = String(data: data, encoding: .utf8) {
+                        self.terminalOutput.append(str)
+                    }
+                } catch {
+                    self.terminalOutput.append("Gateway Connection Error: \(error.localizedDescription)")
+                }
+                self.terminalOutput.append("")
+            }
+            return
+        }
+        
         switch trimmed {
         case "help":
             terminalOutput.append("Available commands: help, info, clear, models, status, uname, date")
         case "info":
             terminalOutput.append("PilotAI Mobile Agent Engine v3.0.5 (iOS arm64)")
             terminalOutput.append("Bundle ID: com.pilotai")
-        case "clear":
-            terminalOutput.removeAll()
         case "models":
             for p in providers {
                 terminalOutput.append("Provider: \(p.name) (\(p.models.count) models)")
@@ -213,6 +294,7 @@ public final class AppState: ObservableObject {
         case "status":
             terminalOutput.append("Memory Active: \(memory.isAutoInjectEnabled ? "YES" : "NO")")
             terminalOutput.append("Conversations Count: \(conversations.count)")
+            terminalOutput.append("Unsandboxed Gateway: \(settings.enableUnsandboxedGateway ? "ACTIVE" : "DISABLED")")
         case "uname":
             terminalOutput.append("Darwin Kernel arm64 iOS / PilotAI-Sandboxed")
         case "date":
