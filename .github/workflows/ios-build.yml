@@ -50,15 +50,26 @@ jobs:
       - name: Verify Archive
         run: |
           echo "=== Archive contents ==="
-          ls -lh build/PilotAI.xcarchive/Products/Applications/
+          ls -lh build/PilotAI.xcarchive/Products/Applications/ || { echo "ERROR: Archive Products missing!"; exit 1; }
           echo ""
           echo "=== Binary info ==="
           BINARY="build/PilotAI.xcarchive/Products/Applications/PilotAI.app/PilotAI"
+          if [ ! -f "$BINARY" ]; then
+            echo "ERROR: Binary not found at $BINARY"
+            exit 1
+          fi
           file "$BINARY"
+          echo "Binary size (bytes): $(wc -c < "$BINARY")"
           ls -lh "$BINARY"
+          echo ""
+          echo "=== Linked frameworks (confirms real Swift binary) ==="
+          otool -L "$BINARY" | head -20
           echo ""
           echo "=== App bundle size ==="
           du -sh build/PilotAI.xcarchive/Products/Applications/PilotAI.app
+          echo ""
+          echo "=== All files in .app ==="
+          find build/PilotAI.xcarchive/Products/Applications/PilotAI.app -type f | sort
 
       - name: Package IPA
         run: |
