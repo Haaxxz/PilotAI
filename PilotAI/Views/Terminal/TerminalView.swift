@@ -26,6 +26,8 @@ public struct TerminalView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                     }
                     .background(Color.black)
+                    .scrollDismissesKeyboard(.interactively)
+                    .onTapGesture { hideKeyboard() }
                     .onChange(of: state.terminalOutput.count) {
                         withAnimation {
                             proxy.scrollTo("bottom", anchor: .bottom)

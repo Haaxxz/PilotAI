@@ -40,6 +40,10 @@ public struct ChatView: View {
                         .padding(.horizontal, 16)
                         .padding(.vertical, 16)
                     }
+                    .scrollDismissesKeyboard(.interactively)
+                    .onTapGesture {
+                        hideKeyboard()
+                    }
                     .onChange(of: state.selectedConversation?.messages.count) {
                         if state.settings.autoScroll, let last = state.selectedConversation?.messages.last {
                             withAnimation(.easeOut(duration: 0.25)) {

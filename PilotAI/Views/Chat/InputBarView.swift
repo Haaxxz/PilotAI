@@ -1,5 +1,11 @@
 import SwiftUI
 
+public extension View {
+    func hideKeyboard() {
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+    }
+}
+
 public struct InputBarView: View {
     @Binding public var text: String
     public let isGenerating: Bool
@@ -41,7 +47,7 @@ public struct InputBarView: View {
             }
             
             // Input controls bar
-            HStack(alignment: .bottom, spacing: 8) {
+            HStack(alignment: .bottom, spacing: 6) {
                 // Attachments button
                 Button(action: { showAttachmentOptions = true }) {
                     Image(systemName: "plus.circle.fill")
@@ -60,7 +66,7 @@ public struct InputBarView: View {
                     Image(systemName: "globe")
                         .font(.system(size: 18))
                         .foregroundColor(webSearchEnabled ? .blue : .secondary)
-                        .padding(6)
+                        .padding(5)
                         .background(webSearchEnabled ? Color.blue.opacity(0.15) : Color.clear)
                         .clipShape(Circle())
                 }
@@ -71,7 +77,7 @@ public struct InputBarView: View {
                     Image(systemName: "brain")
                         .font(.system(size: 18))
                         .foregroundColor(reasoningEnabled ? .purple : .secondary)
-                        .padding(6)
+                        .padding(5)
                         .background(reasoningEnabled ? Color.purple.opacity(0.15) : Color.clear)
                         .clipShape(Circle())
                 }
@@ -88,6 +94,16 @@ public struct InputBarView: View {
                 .background(Color(.secondarySystemBackground))
                 .cornerRadius(20)
                 
+                // Keyboard dismiss button when focused
+                if isFocused {
+                    Button(action: { isFocused = false }) {
+                        Image(systemName: "keyboard.chevron.compact.down")
+                            .font(.system(size: 20))
+                            .foregroundColor(.secondary)
+                            .padding(.bottom, 6)
+                    }
+                }
+                
                 // Send / Stop button
                 if isGenerating {
                     Button(action: onStop) {
@@ -101,6 +117,7 @@ public struct InputBarView: View {
                             onSend()
                             text = ""
                             attachedImageName = nil
+                            isFocused = false
                         }
                     }) {
                         Image(systemName: "arrow.up.circle.fill")
@@ -110,7 +127,7 @@ public struct InputBarView: View {
                     .disabled(text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                 }
             }
-            .padding(.horizontal, 12)
+            .padding(.horizontal, 10)
             .padding(.bottom, 8)
             .background(Color(.systemBackground))
         }
