@@ -171,27 +171,81 @@ public struct ChatView: View {
 struct ModelPickerSheetView: View {
     @EnvironmentObject private var state: AppState
     @Environment(\.dismiss) private var dismiss
+    @State private var searchQuery: String = ""
+    
+    private var filteredProviders: [(provider: ModelProvider, models: [ModelDefinition])] {
+        let q = searchQuery.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        let activeProviders = state.providers.filter { $0.isEnabled }
+        
+        if q.isEmpty {
+            return activeProviders.map { ($0, $0.models) }
+        }
+        
+        return activeProviders.compactMap { provider in
+            let matchesProvider = provider.name.lowercased().contains(q)
+            let matchingModels = provider.models.filter { model in
+                matchesProvider || model.name.lowercased().contains(q) || model.id.lowercased().contains(q)
+            }
+            if matchingModels.isEmpty { return nil }
+            return (provider, matchingModels)
+        }
+    }
     
     var body: some View {
         NavigationView {
             List {
-                ForEach(state.providers.filter { $0.isEnabled }) { provider in
-                    Section(header: Text(provider.name)) {
-                        ForEach(provider.models) { model in
-                            HStack {
-                                VStack(alignment: .leading, spacing: 2) {
-                                    Text(model.name).font(.system(size: 15, weight: .medium))
-                                    Text(model.id).font(.system(size: 11, design: .monospaced)).foregroundColor(.secondary)
-                                }
-                                Spacer()
-                                if provider.id == state.currentProvider?.id && model.id == (state.selectedConversation?.modelId ?? state.currentProvider?.defaultModelId) {
-                                    Image(systemName: "checkmark.circle.fill").foregroundColor(.blue)
-                                }
+                Section {
+                    HStack {
+                        Image(systemName: "magnifyingglass")
+                            .foregroundColor(.secondary)
+                        TextField("Search models or providers…", text: $searchQuery)
+                            .autocorrectionDisabled()
+                            .textInputAutocapitalization(.never)
+                        if !searchQuery.isEmpty {
+                            Button(action: { searchQuery = "" }) {
+                                Image(systemName: "xmark.circle.fill")
+                                    .foregroundColor(.secondary)
                             }
-                            .contentShape(Rectangle())
-                            .onTapGesture {
-                                state.selectModel(providerId: provider.id, modelId: model.id)
-                                dismiss()
+                        }
+                    }
+                }
+                
+                if filteredProviders.isEmpty {
+                    Section {
+                        VStack(spacing: 8) {
+                            Image(systemName: "slash.circle")
+                                .font(.system(size: 32))
+                                .foregroundColor(.secondary)
+                            Text("No models matching \"\(searchQuery)\"")
+                                .font(.system(size: 14))
+                                .foregroundColor(.secondary)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .padding(.vertical, 20)
+                    }
+                } else {
+                    ForEach(filteredProviders, id: \.provider.id) { item in
+                        Section(header: Text(item.provider.name)) {
+                            ForEach(item.models) { model in
+                                HStack {
+                                    VStack(alignment: .leading, spacing: 2) {
+                                        Text(model.name)
+                                            .font(.system(size: 15, weight: .medium))
+                                        Text(model.id)
+                                            .font(.system(size: 11, design: .monospaced))
+                                            .foregroundColor(.secondary)
+                                    }
+                                    Spacer()
+                                    if item.provider.id == state.currentProvider?.id && model.id == (state.selectedConversation?.modelId ?? state.currentProvider?.defaultModelId) {
+                                        Image(systemName: "checkmark.circle.fill")
+                                            .foregroundColor(.blue)
+                                    }
+                                }
+                                .contentShape(Rectangle())
+                                .onTapGesture {
+                                    state.selectModel(providerId: item.provider.id, modelId: model.id)
+                                    dismiss()
+                                }
                             }
                         }
                     }
@@ -207,3 +261,4 @@ struct ModelPickerSheetView: View {
         }
     }
 }
+
