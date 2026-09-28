@@ -27,6 +27,11 @@ public struct MainTabView: View {
                     Label("Terminal", systemImage: "terminal.fill")
                 }
             
+            BrowserView()
+                .tabItem {
+                    Label("Browser", systemImage: "safari.fill")
+                }
+            
             SettingsView()
                 .tabItem {
                     Label("Settings", systemImage: "gearshape.fill")

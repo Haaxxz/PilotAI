@@ -38,6 +38,7 @@
 		A5B6C7D8E9F0123456789012 /* McpServersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C6D7E8F9A0123456789012 /* McpServersView.swift */; };
 		A6B7C8D9E0F11234567890123 /* SkillsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C7D8E9F0A11234567890123 /* SkillsView.swift */; };
 		A7B8C9D0E1F21234567890124 /* AgentToolsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7C8D9E0F1A21234567890124 /* AgentToolsView.swift */; };
+		A8B9C0D1E2F31234567890125 /* BrowserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8C9D0E1F2A31234567890125 /* BrowserView.swift */; };
 		C76BBC914B605F1999EBDD60 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E40C8585F01C59FA9DAD2E31 /* Assets.xcassets */; };
 		6E15F97DB0325B6AA46F8E61 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6D305E500F5B5E04A52AC533 /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
@@ -75,6 +76,7 @@
 		B5C6D7E8F9A0123456789012 /* McpServersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PilotAI/Views/Settings/McpServersView.swift"; sourceTree = "<group>"; };
 		B6C7D8E9F0A11234567890123 /* SkillsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PilotAI/Views/Settings/SkillsView.swift"; sourceTree = "<group>"; };
 		B7C8D9E0F1A21234567890124 /* AgentToolsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PilotAI/Views/Settings/AgentToolsView.swift"; sourceTree = "<group>"; };
+		B8C9D0E1F2A31234567890125 /* BrowserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PilotAI/Views/Browser/BrowserView.swift"; sourceTree = "<group>"; };
 		E40C8585F01C59FA9DAD2E31 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = "folder.assetcatalog"; path = "PilotAI/Resources/Assets.xcassets"; sourceTree = "<group>"; };
 		0AB1CB26E46654ED9BD1B38F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = "text.plist.xml"; path = "PilotAI/Resources/Info.plist"; sourceTree = "<group>"; };
 		6D305E500F5B5E04A52AC533 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = "file.storyboard"; path = "PilotAI/Resources/LaunchScreen.storyboard"; sourceTree = "<group>"; };
@@ -125,6 +127,7 @@
 				B5C6D7E8F9A0123456789012 /* McpServersView.swift */,
 				B6C7D8E9F0A11234567890123 /* SkillsView.swift */,
 				B7C8D9E0F1A21234567890124 /* AgentToolsView.swift */,
+				B8C9D0E1F2A31234567890125 /* BrowserView.swift */,
 				E40C8585F01C59FA9DAD2E31 /* Assets.xcassets */,
 				0AB1CB26E46654ED9BD1B38F /* Info.plist */,
 				6D305E500F5B5E04A52AC533 /* LaunchScreen.storyboard */,
@@ -240,6 +243,7 @@
 				A5B6C7D8E9F0123456789012 /* McpServersView.swift in Sources */,
 				A6B7C8D9E0F11234567890123 /* SkillsView.swift in Sources */,
 				A7B8C9D0E1F21234567890124 /* AgentToolsView.swift in Sources */,
+				A8B9C0D1E2F31234567890125 /* BrowserView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
