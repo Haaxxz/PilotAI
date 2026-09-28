@@ -21,22 +21,20 @@ jobs:
 
       - name: Select Xcode Version
         run: |
-          # Use Xcode 15.4 if available, otherwise fall back to whatever is default
           if [ -d "/Applications/Xcode_15.4.app" ]; then
             sudo xcode-select -s /Applications/Xcode_15.4.app/Contents/Developer
           else
             echo "Xcode 15.4 not found, using default: $(xcode-select -p)"
           fi
-
-      - name: Verify Xcode Environment
-        run: |
           xcodebuild -version
           swift --version
-          echo "Available schemes:"
-          xcodebuild -project PilotAI.xcodeproj -list
+
+      - name: List Available Schemes
+        run: xcodebuild -project PilotAI.xcodeproj -list
 
       - name: Archive Project
         run: |
+          set -o pipefail
           xcodebuild archive \
             -project PilotAI.xcodeproj \
             -scheme PilotAI \
@@ -47,10 +45,20 @@ jobs:
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGN_IDENTITY="" \
             AD_HOC_CODE_SIGNING_ALLOWED=YES \
-            SWIFT_VERSION=5.0 \
-            | xcpretty || true
-          # Verify archive was produced
+            SWIFT_VERSION=5.0
+
+      - name: Verify Archive
+        run: |
+          echo "=== Archive contents ==="
           ls -lh build/PilotAI.xcarchive/Products/Applications/
+          echo ""
+          echo "=== Binary info ==="
+          BINARY="build/PilotAI.xcarchive/Products/Applications/PilotAI.app/PilotAI"
+          file "$BINARY"
+          ls -lh "$BINARY"
+          echo ""
+          echo "=== App bundle size ==="
+          du -sh build/PilotAI.xcarchive/Products/Applications/PilotAI.app
 
       - name: Package IPA
         run: |
@@ -58,7 +66,10 @@ jobs:
           cp -R build/PilotAI.xcarchive/Products/Applications/PilotAI.app build/Payload/
           cd build
           zip -qr9 PilotAI-unsigned.ipa Payload
-          echo "IPA size: $(du -sh PilotAI-unsigned.ipa | cut -f1)"
+          echo "=== IPA size ==="
+          du -sh PilotAI-unsigned.ipa
+          echo "=== IPA contents ==="
+          unzip -l PilotAI-unsigned.ipa
 
       - name: Upload IPA Artifact
         uses: actions/upload-artifact@v4
