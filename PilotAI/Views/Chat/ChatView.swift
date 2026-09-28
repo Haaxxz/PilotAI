@@ -30,7 +30,7 @@ public struct ChatView: View {
                         .padding(.horizontal, 16)
                         .padding(.vertical, 16)
                     }
-                    .onChange(of: state.selectedConversation?.messages.count) { _ in
+                    .onChange(of: state.selectedConversation?.messages.count) {
                         if state.settings.autoScroll, let last = state.selectedConversation?.messages.last {
                             withAnimation(.easeOut(duration: 0.25)) {
                                 proxy.scrollTo(last.id, anchor: .bottom)

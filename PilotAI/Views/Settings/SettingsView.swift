@@ -134,20 +134,20 @@ public struct SettingsView: View {
                             Text(theme.displayName).tag(theme)
                         }
                     }
-                    .onChange(of: state.settings.theme) { _ in
+                    .onChange(of: state.settings.theme) {
                         state.saveSettings()
                     }
                 }
                 
                 Section(header: Text("Preferences")) {
                     Toggle("Haptic Feedback", isOn: $state.settings.hapticsEnabled)
-                        .onChange(of: state.settings.hapticsEnabled) { _ in state.saveSettings() }
+                        .onChange(of: state.settings.hapticsEnabled) { state.saveSettings() }
                     
                     Toggle("Auto-scroll Messages", isOn: $state.settings.autoScroll)
-                        .onChange(of: state.settings.autoScroll) { _ in state.saveSettings() }
+                        .onChange(of: state.settings.autoScroll) { state.saveSettings() }
                     
                     Toggle("Smooth Stream Reveal", isOn: $state.settings.smoothStreamReveal)
-                        .onChange(of: state.settings.smoothStreamReveal) { _ in state.saveSettings() }
+                        .onChange(of: state.settings.smoothStreamReveal) { state.saveSettings() }
                 }
                 
                 Section(header: Text("Data")) {

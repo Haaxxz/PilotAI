@@ -26,7 +26,7 @@ public struct TerminalView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                     }
                     .background(Color.black)
-                    .onChange(of: state.terminalOutput.count) { _ in
+                    .onChange(of: state.terminalOutput.count) {
                         withAnimation {
                             proxy.scrollTo("bottom", anchor: .bottom)
                         }
