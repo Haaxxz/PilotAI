@@ -40,7 +40,8 @@ public struct CharacterCardParser {
             description: description,
             greeting: greeting,
             persona: persona,
-            systemPrompt: prompt
+            systemPrompt: prompt,
+            isBuiltin: false
         )
     }
 }
