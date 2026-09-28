@@ -82,7 +82,7 @@ public struct CustomHeader: Identifiable, Codable, Equatable {
 }
 
 public struct ModelProvider: Identifiable, Codable, Equatable {
-    public let id: String
+    public var id: String
     public var name: String
     public var type: ProviderType
     public var baseURL: String
