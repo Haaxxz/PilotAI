@@ -90,7 +90,10 @@ public struct ChatView: View {
                 if let prov = state.currentProvider {
                     ForEach(prov.models) { model in
                         Button(model.name) {
-                            state.selectedConversation?.modelId = model.id
+                            if var conv = state.selectedConversation {
+                                conv.modelId = model.id
+                                state.selectedConversation = conv
+                            }
                         }
                     }
                 }

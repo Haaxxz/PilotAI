@@ -3,7 +3,6 @@ import SwiftUI
 public struct CharacterListView: View {
     @EnvironmentObject private var state: AppState
     @State private var selectedCharacter: Character? = nil
-    @State private var showNewCharacterSheet: Bool = false
     
     public init() {}
     
@@ -19,11 +18,6 @@ public struct CharacterListView: View {
             }
             .navigationTitle("Characters")
             .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: { showNewCharacterSheet = true }) {
-                        Image(systemName: "plus")
-                    }
-                }
             }
             .sheet(item: $selectedCharacter) { char in
                 characterDetailSheet(char)

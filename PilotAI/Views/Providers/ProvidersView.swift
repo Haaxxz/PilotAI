@@ -148,13 +148,18 @@ public struct ProviderDetailView: View {
                 }
                 
                 let (_, response) = try await URLSession.shared.data(for: req)
-                if let http = response as? HTTPURLResponse {
-                    testResult = "Success: HTTP \(http.statusCode)"
+                await MainActor.run {
+                    if let http = response as? HTTPURLResponse {
+                        testResult = "Success: HTTP \(http.statusCode)"
+                    }
+                    isTesting = false
                 }
             } catch {
-                testResult = "Failed: \(error.localizedDescription)"
+                await MainActor.run {
+                    testResult = "Failed: \(error.localizedDescription)"
+                    isTesting = false
+                }
             }
-            isTesting = false
         }
     }
 }
