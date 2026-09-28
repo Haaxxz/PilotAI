@@ -198,4 +198,108 @@ public final class AppState: ObservableObject {
     public func saveCharacters() {
         storage.saveCharacters(characters)
     }
+    
+    public func addProvider(_ provider: ModelProvider) {
+        providers.append(provider)
+        storage.saveProviders(providers)
+    }
+
+    public func deleteProvider(id: String) {
+        providers.removeAll(where: { $0.id == id })
+        storage.saveProviders(providers)
+    }
+
+    public func updateProvider(_ provider: ModelProvider) {
+        if let idx = providers.firstIndex(where: { $0.id == provider.id }) {
+            providers[idx] = provider
+            storage.saveProviders(providers)
+        }
+    }
+
+    public func resetProvider(id: String) {
+        if let def = ModelProvider.defaults.first(where: { $0.id == id }),
+           let idx = providers.firstIndex(where: { $0.id == id }) {
+            var reset = def
+            reset.apiKey = providers[idx].apiKey // preserve API key
+            providers[idx] = reset
+            storage.saveProviders(providers)
+        }
+    }
+
+    public func addModel(to providerId: String, model: ModelDefinition) {
+        if let idx = providers.firstIndex(where: { $0.id == providerId }) {
+            providers[idx].models.append(model)
+            storage.saveProviders(providers)
+        }
+    }
+
+    public func updateModel(in providerId: String, model: ModelDefinition) {
+        if let pIdx = providers.firstIndex(where: { $0.id == providerId }),
+           let mIdx = providers[pIdx].models.firstIndex(where: { $0.id == model.id }) {
+            providers[pIdx].models[mIdx] = model
+            storage.saveProviders(providers)
+        }
+    }
+
+    public func deleteModel(from providerId: String, modelId: String) {
+        if let pIdx = providers.firstIndex(where: { $0.id == providerId }) {
+            providers[pIdx].models.removeAll(where: { $0.id == modelId })
+            storage.saveProviders(providers)
+        }
+    }
+
+    public func fetchModels(for providerId: String) async {
+        guard let provider = providers.first(where: { $0.id == providerId }) else { return }
+        guard let url = URL(string: provider.baseURL.hasSuffix("/models") ? provider.baseURL : provider.baseURL.trimmingCharacters(in: CharacterSet(charactersIn: "/")) + "/models") else { return }
+        
+        var request = URLRequest(url: url)
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        if !provider.apiKey.isEmpty {
+            request.setValue("Bearer \(provider.apiKey)", forHTTPHeaderField: "Authorization")
+        }
+        for header in provider.customHeaders {
+            request.setValue(header.value, forHTTPHeaderField: header.key)
+        }
+        
+        do {
+            let (data, _) = try await URLSession.shared.data(for: request)
+            if let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+               let dataArray = json["data"] as? [[String: Any]] {
+                let fetched: [ModelDefinition] = dataArray.compactMap { obj in
+                    guard let id = obj["id"] as? String else { return nil }
+                    return ModelDefinition(id: id, name: id)
+                }
+                await MainActor.run {
+                    if let pIdx = self.providers.firstIndex(where: { $0.id == providerId }) {
+                        // Merge: keep existing custom models, add new ones
+                        var existing = self.providers[pIdx].models
+                        let existingIds = Set(existing.map { $0.id })
+                        let newModels = fetched.filter { !existingIds.contains($0.id) }
+                        existing.append(contentsOf: newModels)
+                        self.providers[pIdx].models = existing
+                        self.storage.saveProviders(self.providers)
+                    }
+                }
+            }
+        } catch {
+            // silently fail, UI will show error
+        }
+    }
+
+    public func addCharacter(_ char: Character) {
+        characters.insert(char, at: 0)
+        storage.saveCharacters(characters)
+    }
+
+    public func updateCharacter(_ char: Character) {
+        if let idx = characters.firstIndex(where: { $0.id == char.id }) {
+            characters[idx] = char
+            storage.saveCharacters(characters)
+        }
+    }
+
+    public func deleteCharacter(id: String) {
+        characters.removeAll(where: { $0.id == id })
+        storage.saveCharacters(characters)
+    }
 }

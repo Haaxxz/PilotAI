@@ -31,6 +31,8 @@
 		057968101761544F81B071C8 /* ProvidersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AE00AF5330F599BB333F0A1 /* ProvidersView.swift */; };
 		4D9A7589DEB6576B8E2FE2A8 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BAA5ABA3E17567EAD3BD2D7 /* SettingsView.swift */; };
 		BAFBC60843545F9EBFEF3094 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA7A95AD11A055AE87B2F5C9 /* MainTabView.swift */; };
+		A1B2C3D4E5F6789012345678 /* CharacterEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1C2D3E4F5A6789012345678 /* CharacterEditorView.swift */; };
+		A2B3C4D5E6F7890123456789 /* BackupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C3D4E5F6A7890123456789 /* BackupView.swift */; };
 		C76BBC914B605F1999EBDD60 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E40C8585F01C59FA9DAD2E31 /* Assets.xcassets */; };
 		6E15F97DB0325B6AA46F8E61 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6D305E500F5B5E04A52AC533 /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
@@ -61,6 +63,8 @@
 		0AE00AF5330F599BB333F0A1 /* ProvidersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PilotAI/Views/Providers/ProvidersView.swift"; sourceTree = "<group>"; };
 		3BAA5ABA3E17567EAD3BD2D7 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PilotAI/Views/Settings/SettingsView.swift"; sourceTree = "<group>"; };
 		BA7A95AD11A055AE87B2F5C9 /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PilotAI/Views/MainTabView.swift"; sourceTree = "<group>"; };
+		B1C2D3E4F5A6789012345678 /* CharacterEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PilotAI/Views/Characters/CharacterEditorView.swift"; sourceTree = "<group>"; };
+		B2C3D4E5F6A7890123456789 /* BackupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PilotAI/Views/Settings/BackupView.swift"; sourceTree = "<group>"; };
 		E40C8585F01C59FA9DAD2E31 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = "folder.assetcatalog"; path = "PilotAI/Resources/Assets.xcassets"; sourceTree = "<group>"; };
 		0AB1CB26E46654ED9BD1B38F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = "text.plist.xml"; path = "PilotAI/Resources/Info.plist"; sourceTree = "<group>"; };
 		6D305E500F5B5E04A52AC533 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = "file.storyboard"; path = "PilotAI/Resources/LaunchScreen.storyboard"; sourceTree = "<group>"; };
@@ -104,6 +108,8 @@
 				0AE00AF5330F599BB333F0A1 /* ProvidersView.swift */,
 				3BAA5ABA3E17567EAD3BD2D7 /* SettingsView.swift */,
 				BA7A95AD11A055AE87B2F5C9 /* MainTabView.swift */,
+				B1C2D3E4F5A6789012345678 /* CharacterEditorView.swift */,
+				B2C3D4E5F6A7890123456789 /* BackupView.swift */,
 				E40C8585F01C59FA9DAD2E31 /* Assets.xcassets */,
 				0AB1CB26E46654ED9BD1B38F /* Info.plist */,
 				6D305E500F5B5E04A52AC533 /* LaunchScreen.storyboard */,
@@ -212,6 +218,8 @@
 				057968101761544F81B071C8 /* ProvidersView.swift in Sources */,
 				4D9A7589DEB6576B8E2FE2A8 /* SettingsView.swift in Sources */,
 				BAFBC60843545F9EBFEF3094 /* MainTabView.swift in Sources */,
+				A1B2C3D4E5F6789012345678 /* CharacterEditorView.swift in Sources */,
+				A2B3C4D5E6F7890123456789 /* BackupView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

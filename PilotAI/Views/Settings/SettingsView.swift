@@ -151,7 +151,7 @@ public struct SettingsView: View {
                 }
                 
                 Section(header: Text("Data")) {
-                    NavigationLink(destination: BackupRestoreView().environmentObject(state)) {
+                    NavigationLink(destination: BackupView().environmentObject(state)) {
                         HStack {
                             Image(systemName: "arrow.triangle.2.circlepath")
                                 .foregroundColor(.orange)

@@ -3,6 +3,8 @@ import SwiftUI
 public struct CharacterListView: View {
     @EnvironmentObject private var state: AppState
     @State private var selectedCharacter: Character? = nil
+    @State private var showEditor: Bool = false
+    @State private var editingCharacter: Character? = nil
     
     public init() {}
     
@@ -18,9 +20,27 @@ public struct CharacterListView: View {
             }
             .navigationTitle("Characters")
             .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        editingCharacter = nil
+                        showEditor = true
+                    }) {
+                        Image(systemName: "plus")
+                    }
+                }
             }
             .sheet(item: $selectedCharacter) { char in
                 characterDetailSheet(char)
+            }
+            .sheet(isPresented: $showEditor) {
+                CharacterEditorView(character: editingCharacter) { updatedChar in
+                    if let index = state.characters.firstIndex(where: { $0.id == updatedChar.id }) {
+                        state.characters[index] = updatedChar
+                    } else {
+                        state.characters.append(updatedChar)
+                    }
+                    state.saveCharacters()
+                }
             }
         }
         .navigationViewStyle(StackNavigationViewStyle())
@@ -66,6 +86,28 @@ public struct CharacterListView: View {
                     Text("Details")
                         .font(.system(size: 13, weight: .medium))
                         .foregroundColor(.secondary)
+                }
+                
+                if !char.isBuiltin {
+                    Button(action: {
+                        editingCharacter = char
+                        showEditor = true
+                    }) {
+                        Text("Edit")
+                            .font(.system(size: 13, weight: .medium))
+                            .foregroundColor(.blue)
+                    }
+                    .padding(.leading, 8)
+                    
+                    Button(action: {
+                        state.characters.removeAll { $0.id == char.id }
+                        state.saveCharacters()
+                    }) {
+                        Image(systemName: "trash")
+                            .font(.system(size: 13, weight: .medium))
+                            .foregroundColor(.red)
+                    }
+                    .padding(.leading, 8)
                 }
                 
                 Spacer()
